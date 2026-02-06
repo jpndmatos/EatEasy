@@ -1,0 +1,95 @@
+<?php
+session_start();
+require 'db.php';
+/** @var PDO $pdo */
+
+if (!isset($_SESSION['user_id']) || $_SESSION['tipo'] != 'admin') { header("Location: index.php"); exit; }
+
+$nome_user = $_SESSION['nome'];
+?>
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <title>Gerir Reservas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="logo">eatEasy</div>
+        <div class="user-info">
+            <p>Olá, <strong><?php echo htmlspecialchars($nome_user); ?></strong></p>
+            <small>Administrador</small>
+        </div>
+        <nav class="menu-links">
+            <a href="dashboard.php">Início</a>
+            <a href="admin_reservas.php" class="active">Todas as Reservas</a>
+            <a href="admin_restaurante.php">Novo Restaurante</a>
+            <a href="logout.php" class="btn-logout">Terminar Sessão</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <div class="restaurant-header" style="margin-top: 20px; margin-bottom: 30px;">
+            <h1>Gestão de Reservas</h1>
+        </div>
+
+        <div class="white-box">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                <tr>
+                    <th style="width: 25%;">Restaurante</th>
+                    <th style="width: 25%;">Cliente</th>
+                    <th style="width: 20%;">Data e Hora</th>
+                    <th style="width: 15%;">Pessoas</th>
+                    <th style="width: 15%;">Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $sqlAdmin = "SELECT r.data_hora, r.num_pessoas, u.nome as cliente, rest.nome as restaurante 
+                              FROM reservas r 
+                              JOIN utilizadores u ON r.utilizador_id = u.id 
+                              JOIN restaurantes rest ON r.restaurante_id = rest.id 
+                              ORDER BY r.data_hora DESC";
+                $stmtAdmin = $pdo->query($sqlAdmin);
+
+                if ($stmtAdmin->rowCount() > 0):
+                    while ($adm = $stmtAdmin->fetch(PDO::FETCH_ASSOC)):
+                        $passou = strtotime($adm['data_hora']) < time();
+                        ?>
+                        <tr>
+                            <td style="font-weight: bold; color: var(--primary-color);">
+                                <?php echo htmlspecialchars($adm['restaurante']); ?>
+                            </td>
+                            <td>
+                                <?php echo htmlspecialchars($adm['cliente']); ?>
+                            </td>
+                            <td>
+                                <?php echo date('d/m/Y - H:i', strtotime($adm['data_hora'])); ?>
+                            </td>
+                            <td>
+                                <?php echo htmlspecialchars($adm['num_pessoas']); ?> pax
+                            </td>
+                            <td>
+                                <?php if($passou): ?>
+                                    <span class="badge-past">Concluída</span>
+                                <?php else: ?>
+                                    <span class="badge-future">Agendada</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endwhile;
+                else: ?>
+                    <tr><td colspan="5" style="text-align:center; padding: 30px; color: #888;">Não existem reservas registadas.</td></tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>
