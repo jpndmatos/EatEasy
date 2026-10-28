@@ -32,7 +32,7 @@ button,a,input,select {touch-action:manipulation}
 h1,h2,h3 {text-wrap:balance;color:var(--text-color);font-weight:600;line-height:1.25;overflow-wrap:break-word;min-width:0}
 h1 {font-size:32px;margin:0 0 var(--space-lg)}h2 {font-size:28px;margin:0 0 var(--space-lg)}h3 {font-size:20px;margin:0 0 var(--space-lg)}
 p {margin:0 0 var(--space-md)}
-.theme-toggle {position:absolute;right:24px;top:16px;width:auto;min-height:40px;padding:var(--space-xs) var(--space-md);background:var(--surface);color:var(--text-muted);border:1px solid var(--border);z-index:10;font-size:12px}
+.theme-toggle {position:absolute;right:24px;top:16px;width:44px;height:44px;min-height:44px;padding:var(--space-xs);display:inline-flex;align-items:center;justify-content:center;background:var(--surface);color:var(--text-muted);border:1px solid var(--border);z-index:10;font-size:12px}
 .theme-toggle:hover {background:var(--primary-light);color:var(--primary-color)}
 .search-box {margin-bottom:var(--space-md)}.search-box form {gap:var(--space-sm)!important}.search-box input {min-width:0;flex:1}.search-box button {width:auto;padding-inline:var(--space-lg)}
 .filter-bar {display:flex;gap:var(--space-xs);overflow:auto;padding:var(--space-2xs) 0 var(--space-md);margin-bottom:var(--space-lg)}
@@ -74,7 +74,7 @@ table {width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}th 
  .app-layout {display:block}.sidebar {height:auto;position:static;padding:var(--space-20);border-right:0;border-bottom:1px solid var(--border)}
  .logo {font-size:24px;margin:0 0 var(--space-md)}.user-info {border:0;padding:0;margin:0 0 var(--space-sm)}.user-info p {font-size:13px}.user-info small {display:none}
  .menu-links {flex-direction:row;flex-wrap:wrap;gap:var(--space-2xs)}.menu-links a {padding:var(--space-xs) var(--space-sm);font-size:12px}.menu-links .btn-logout {margin:0}
- .theme-toggle {top:16px;right:16px;padding:var(--space-xs) var(--space-sm)}.main-content form>div[style*="display"] {flex-wrap:wrap}.main-content .form-group {min-width:160px!important;max-width:100%}.main-content {padding:var(--space-28) var(--space-20) var(--space-xl)}h1 {font-size:28px}h2 {font-size:24px}
+ .theme-toggle {top:16px;right:16px;padding:var(--space-xs)}.main-content form>div[style*="display"] {flex-wrap:wrap}.main-content .form-group {min-width:160px!important;max-width:100%}.main-content {padding:var(--space-28) var(--space-20) var(--space-xl)}h1 {font-size:28px}h2 {font-size:24px}
  .restaurant-grid {gap:var(--space-md)}.card-info {padding:var(--space-md)}.card-img {height:160px}.card-title {font-size:16px}.card-meta {flex-wrap:wrap}
  .restaurant-banner {height:200px}.auth-card {padding:var(--space-28)}.white-box {padding:var(--space-md)}.search-box button {padding-inline:var(--space-md)}
 }
