@@ -17,10 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data_final = $dia . ' ' . $hora_sel . ':00';
     $ts = strtotime($data_final);
 
-    if ($ts < time()) { $msg = "Data passada."; $tipo_msg = "aviso"; }
+    $validSlots = array_merge(['12:00','12:30','13:00','13:30','14:00','14:30'], ['19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30']);
+    $validDate = DateTime::createFromFormat('!Y-m-d', $dia);
+    if (!$validDate || $validDate->format('Y-m-d') !== $dia || !in_array($hora_sel, $validSlots, true) || !filter_var($pessoas, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 20]])) {
+        $msg = "Escolha um dia, horário e número de pessoas válidos."; $tipo_msg = "aviso";
+    }
+    elseif ($ts < time()) { $msg = "Data passada."; $tipo_msg = "aviso"; }
     else {
         $h = (int)substr($hora_sel, 0, 2); $is_almoco = ($h < 16);
-        $sqlCheck = "SELECT data_hora FROM reservas WHERE utilizador_id = :uid AND data_hora::date = :dia";
+        $sqlCheck = "SELECT data_hora FROM reservas WHERE utilizador_id = :uid AND DATE(data_hora) = :dia";
         $stmtCheck = $pdo->prepare($sqlCheck); $stmtCheck->execute(['uid' => $_SESSION['user_id'], 'dia' => $dia]);
         $conflito = false;
         while ($res = $stmtCheck->fetch(PDO::FETCH_ASSOC)) {
@@ -35,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$rest = $pdo->query("SELECT * FROM restaurantes WHERE id=".(int)$rest_id)->fetch();
+$rest = $pdo->query("SELECT * FROM restaurantes WHERE ativo = TRUE AND id=".(int)$rest_id)->fetch();
 if (!$rest) { header("Location: dashboard.php"); exit; }
 
 $slots = []; for ($h=12; $h<=14; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprintf("%02d:30", $h); }
@@ -45,16 +50,21 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <script src="js/theme.js"></script>
     <title>Reservar</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
 </head>
 <body>
+<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false">Tema escuro</button>
 
 <div class="app-layout">
     <aside class="sidebar">
         <div class="logo">eatEasy</div>
-        <div class="user-info"><p>Olá, <strong><?php echo htmlspecialchars($nome); ?></strong></p><small>Cliente Gastronómico</small></div>
+        <div class="user-info"><p>Olá, <strong><?php echo htmlspecialchars($nome); ?></strong></p><small>Cliente</small></div>
         <nav class="menu-links">
             <a href="dashboard.php?p=home">Início</a>
             <a href="dashboard.php?p=reservas">Minhas Reservas</a>
@@ -84,17 +94,18 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
         }
 
         $imgUrl = "https://loremflickr.com/1000/400/" . urlencode($keywords) . "?lock=" . $rest['id'];
+                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".jpg"; }
         ?>
         <img src="<?php echo $imgUrl; ?>" class="restaurant-banner" alt="Banner">
 
         <div class="restaurant-header">
             <h1><?php echo htmlspecialchars($rest['nome']); ?></h1>
             <div class="restaurant-tags">
-                <span class="tag-item highlight">🍽️ <?php echo htmlspecialchars($rest['cozinha']); ?></span>
-                <span class="tag-item">📍 <?php echo htmlspecialchars($rest['localizacao']); ?></span>
-                <span class="tag-item">💶 Preço Médio: <?php echo htmlspecialchars($rest['preco_medio']); ?> €</span>
+                <span class="tag-item highlight"><?php echo htmlspecialchars($rest['cozinha']); ?></span>
+                <span class="tag-item"><?php echo htmlspecialchars($rest['localizacao']); ?></span>
+                <span class="tag-item">Preço Médio: <?php echo htmlspecialchars($rest['preco_medio']); ?> €</span>
             </div>
-            <div class="info-hours"><strong>🕘 Horários:</strong> Almoço: 12:00-15:00 | Jantar: 19:00-23:00</div>
+            <div class="info-hours"><strong>Horários:</strong> Almoço: 12:00-15:00 | Jantar: 19:00-23:00</div>
         </div>
 
         <div class="reservation-section">
@@ -105,13 +116,13 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
-                        <label>Dia</label>
-                        <input type="date" name="dia" required min="<?php echo date('Y-m-d'); ?>">
+                        <label for="dia">Dia</label>
+                        <input id="dia" type="date" name="dia" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
-                        <label>Hora</label>
-                        <select name="hora" required>
+                        <label for="hora">Hora</label>
+                        <select id="hora" name="hora" required>
                             <option value="" disabled selected>Selecionar Hora</option>
                             <optgroup label="Almoço"><?php foreach($slots as $s) if($s<"18:00") echo "<option value='$s'>$s</option>"; ?></optgroup>
                             <optgroup label="Jantar"><?php foreach($slots as $s) if($s>"18:00") echo "<option value='$s'>$s</option>"; ?></optgroup>
@@ -119,7 +130,7 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
                     </div>
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
-                        <label>Pessoas</label>
+                        <label for="select_pessoas">Pessoas</label>
                         <select id="select_pessoas" onchange="togglePessoas(this)">
                             <option value="1">1 Pessoa</option>
                             <option value="2" selected>2 Pessoas</option>
@@ -133,6 +144,7 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
                                 type="number"
                                 name="pessoas"
                                 id="input_pessoas"
+                                aria-label="Número de pessoas"
                                 min="1"
                                 max="20"
                                 value="2"

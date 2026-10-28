@@ -33,10 +33,16 @@ if (!$rest) { echo "Restaurante não encontrado."; exit; }
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <script src="js/theme.js"></script>
     <title>Editar Restaurante</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
 </head>
 <body>
+<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false">Tema escuro</button>
 
 <div class="app-layout">
     <aside class="sidebar">
@@ -55,23 +61,26 @@ if (!$rest) { echo "Restaurante não encontrado."; exit; }
     <main class="main-content" style="display:flex; justify-content:center; align-items:start;">
         <div class="white-box" style="width: 100%; max-width: 600px; margin-top: 20px;">
             <div style="margin-bottom:30px;">
-                <small style="text-transform:uppercase; color:#888; font-weight:bold;">A editar</small>
+                <small style="text-transform:uppercase; color:var(--text-muted); font-weight:bold;">A editar</small>
                 <h2 style="margin:0;"><?php echo htmlspecialchars($rest['nome']); ?></h2>
             </div>
             <?php if($msg) echo "<div class='$tipo_msg'>$msg</div>"; ?>
             <form method="POST">
-                <div class="form-group"><label>Nome do Restaurante</label><input type="text" name="nome" value="<?php echo htmlspecialchars($rest['nome']); ?>" required></div>
-                <div class="form-group"><label>Localização</label><input type="text" name="local" value="<?php echo htmlspecialchars($rest['localizacao']); ?>" required></div>
+                <div class="form-group"><label for="nome">Nome do Restaurante</label>
+                        <input id="nome" type="text" name="nome" value="<?php echo htmlspecialchars($rest['nome']); ?>" required></div>
+                <div class="form-group"><label for="local">Localização</label>
+                        <input id="local" type="text" name="local" value="<?php echo htmlspecialchars($rest['localizacao']); ?>" required></div>
                 <div style="display: flex; gap: 20px;">
                     <div class="form-group" style="flex: 1;">
-                        <label>Tipo de Cozinha</label>
-                        <select name="cozinha" required>
+                        <label for="cozinha">Tipo de Cozinha</label>
+                        <select id="cozinha" name="cozinha" required>
                             <?php foreach ($tipos_cozinha as $tipo): ?>
                                 <option value="<?php echo $tipo; ?>" <?php echo ($rest['cozinha'] == $tipo) ? 'selected' : ''; ?>><?php echo $tipo; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 1;"><label>Preço Médio (€)</label><input type="number" step="0.01" name="preco" value="<?php echo htmlspecialchars($rest['preco_medio']); ?>" required></div>
+                    <div class="form-group" style="flex: 1;"><label for="preco">Preço Médio (€)</label>
+                        <input id="preco" type="number" step="0.01" name="preco" value="<?php echo htmlspecialchars($rest['preco_medio']); ?>" required></div>
                 </div>
                 <div class="form-actions">
                     <button type="submit">Guardar Alterações</button>

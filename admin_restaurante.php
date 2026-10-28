@@ -27,11 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <script src="js/theme.js"></script>
     <title>Novo Restaurante</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
 </head>
 <body>
+<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false">Tema escuro</button>
 
 <div class="app-layout">
     <aside class="sidebar">
@@ -63,28 +68,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div style="display: flex; gap: 30px; flex-wrap: wrap;">
                     <div class="form-group" style="flex: 2; min-width: 300px;">
-                        <label>Nome do Restaurante</label>
-                        <input type="text" name="nome" placeholder="Ex: O Tasco do Zé" required>
+                        <label for="nome">Nome do Restaurante</label>
+                        <input id="nome" type="text" name="nome" placeholder="Ex: O Tasco do Zé" required>
                     </div>
                     <div class="form-group" style="flex: 1; min-width: 200px;">
-                        <label>Localização</label>
-                        <input type="text" name="local" placeholder="Ex: Lisboa, Baixa" required>
+                        <label for="local">Localização</label>
+                        <input id="local" type="text" name="local" placeholder="Ex: Lisboa, Baixa" required>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 30px; flex-wrap: wrap;">
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
-                        <label>Tipo de Cozinha</label>
-                        <select name="cozinha" required>
+                        <label for="cozinha">Tipo de Cozinha</label>
+                        <select id="cozinha" name="cozinha" required>
                             <option value="" disabled selected>Selecionar...</option>
                             <?php foreach ($tipos_cozinha as $tipo): ?><option value="<?php echo $tipo; ?>"><?php echo $tipo; ?></option><?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="form-group" style="flex: 1; min-width: 150px;">
-                        <label>Preço Médio (€)</label>
-                        <input type="number" step="0.01" name="preco" placeholder="0.00" required>
+                        <label for="preco">Preço Médio (€)</label>
+                        <input id="preco" type="number" step="0.01" name="preco" placeholder="0.00" required>
                     </div>
 
                 </div>

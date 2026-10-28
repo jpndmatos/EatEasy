@@ -11,10 +11,16 @@ $nome_user = $_SESSION['nome'];
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <script src="js/theme.js"></script>
     <title>Gerir Reservas</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
 </head>
 <body>
+<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false">Tema escuro</button>
 
 <div class="app-layout">
     <aside class="sidebar">
@@ -57,8 +63,9 @@ $nome_user = $_SESSION['nome'];
                               ORDER BY r.data_hora DESC";
                 $stmtAdmin = $pdo->query($sqlAdmin);
 
-                if ($stmtAdmin->rowCount() > 0):
-                    while ($adm = $stmtAdmin->fetch(PDO::FETCH_ASSOC)):
+                $adminReservations = $stmtAdmin->fetchAll(PDO::FETCH_ASSOC);
+                if (count($adminReservations) > 0):
+                    foreach ($adminReservations as $adm):
                         $passou = strtotime($adm['data_hora']) < time();
                         ?>
                         <tr>
@@ -82,9 +89,9 @@ $nome_user = $_SESSION['nome'];
                                 <?php endif; ?>
                             </td>
                         </tr>
-                    <?php endwhile;
+                    <?php endforeach;
                 else: ?>
-                    <tr><td colspan="5" style="text-align:center; padding: 30px; color: #888;">Não existem reservas registadas.</td></tr>
+                    <tr><td colspan="5" style="text-align:center; padding: 30px; color:var(--text-muted);">Não existem reservas registadas.</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>

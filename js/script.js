@@ -1,17 +1,21 @@
 // js/script.js
 document.addEventListener("DOMContentLoaded", function() {
 
-    const alertas = document.querySelectorAll('.aviso, .sucesso');
-    if (alertas.length > 0) {
-        setTimeout(() => {
-            alertas.forEach(alerta => {
-                alerta.style.transition = "opacity 1s";
-                alerta.style.opacity = "0";
-                setTimeout(() => alerta.remove(), 1000);
-            });
-        }, 3000);
+    const theme = document.querySelector('.theme-toggle');
+    const syncTheme = () => {
+        const dark = document.documentElement.dataset.mode === 'dark';
+        theme.textContent = dark ? 'Tema claro' : 'Tema escuro';
+        theme.setAttribute('aria-pressed', String(dark));
+    };
+    if (theme) {
+        syncTheme();
+        theme.addEventListener('click', () => {
+            const mode = document.documentElement.dataset.mode === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.mode = mode;
+            try { localStorage.setItem('eateasy-theme', mode); } catch {}
+            syncTheme();
+        });
     }
-
     const botoesRemover = document.querySelectorAll('.btn-remover');
     botoesRemover.forEach(btn => {
         btn.addEventListener('click', function(e) {

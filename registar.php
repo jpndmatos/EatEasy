@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: index.php");
         exit;
     } catch (PDOException $e) {
-        $mensagem = "Erro Técnico: " . $e->getMessage();
+        $mensagem = "Não foi possível criar a conta. Verifique os dados ou utilize outro email.";
         $tipo_msg = "aviso";
     }
 }
@@ -27,11 +27,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <script src="js/theme.js"></script>
     <title>Registar - eatEasy</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
 </head>
 <body>
+<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false">Tema escuro</button>
 <div class="auth-container">
     <div class="auth-card">
         <h2>Criar Nova Conta</h2>
@@ -39,14 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if($mensagem) echo "<div class='$tipo_msg'>$mensagem</div>"; ?>
 
         <form method="POST">
-            <label>Nome Completo:</label>
-            <input type="text" name="nome" placeholder="O teu nome" required>
+            <label for="nome">Nome Completo:</label>
+                        <input id="nome" type="text" name="nome" placeholder="O teu nome" required>
 
-            <label>Email:</label>
-            <input type="email" name="email" placeholder="exemplo@email.com" required>
+            <label for="email">Email:</label>
+                        <input id="email" type="email" name="email" placeholder="exemplo@email.com" required>
 
-            <label>Password:</label>
-            <input type="password" name="password" placeholder="Uma senha segura" required>
+            <label for="password">Password:</label>
+                        <input id="password" type="password" name="password" placeholder="Uma senha segura" required>
 
             <button type="submit">Registar</button>
         </form>

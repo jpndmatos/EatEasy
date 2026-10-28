@@ -1,48 +1,44 @@
-Restaurant reservation platform inspired by the style of TheFork website.
+<h1><picture><source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.svg"><img src="docs/logo.svg" alt="EatEasy" width="272" height="64"></picture></h1>
+
+A restaurant booking app built with PHP and PostgreSQL. Search by cuisine or location, book a table, and manage upcoming reservations. Administrators can add and edit restaurants and review bookings.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/dark.jpg">
+  <img src="docs/desktop.jpg" alt="EatEasy restaurant directory with sample listings" width="1200">
+</picture>
+
+<details>
+<summary>Booking and mobile views</summary>
+<br>
+<img src="docs/booking.jpg" alt="Booking a table in EatEasy" width="1000">
+<img src="docs/admin.jpg" alt="Administrator reservation table" width="1000">
+<img src="docs/mobile.jpg" alt="EatEasy on mobile" width="320">
+</details>
 
 ## Features
 
-- User registration and login (client/admin)
-- Restaurant search and filtering
-- Table reservation by date/time/people
-- Reservation management (client and admin)
-- Add, edit, and remove restaurants (admin)
-- Restaurant change history
+- Customer and administrator accounts with hashed passwords.
+- Restaurant search, cuisine filters, and reservation history.
+- Lunch and dinner slots with checks for conflicting bookings.
+- Responsive layout, Poppins typography, and a saved light or dark theme.
 
-## Project Structure
+## Run locally
 
-admin_reservas.php # Reservation management (admin)
-admin_restaurante.php # Add restaurant (admin)
-cancelar_reserva.php # Cancel reservation (client)
-dashboard.php # Main dashboard (client/admin)
-db.php # Database connection
-editar_restaurante.php # Edit restaurant (admin)
-index.php # Login page
-logout.php # Logout
-registar.php # User registration
-remover_restaurante.php # Remove restaurant (admin)
-reservar.php # Make reservation (client)
-css/style.css # Styles
-js/script.js # Scripts
+PHP 8.2+ with PDO PostgreSQL and a PostgreSQL database. Apply `database/schema-postgres.sql`, then set `EATEASY_DSN`, `EATEASY_DB_USER` and `EATEASY_DB_PASSWORD` in your server environment.
 
-## Requirements
+```sh
+php -S localhost:8080 router.php
+```
 
-- PHP 8+
-- PostgreSQL
-- Web server (PHP server)
+### Sample data
 
-## Installation
+For a local demo, enable PDO SQLite and run:
 
-1. Clone the repository.
-2. Configure the PostgreSQL database as shown in `db.php`.
-3. Import the SQL schema (not included).
-4. Place the files on a web server.
-5. Access `index.php` to start.
+```sh
+php scripts/demo.php
+EATEASY_DSN=sqlite:var/demo.sqlite EATEASY_DEMO=1 php -S localhost:8080 router.php
+```
 
-## Inspiration
+On PowerShell, set `$env:EATEASY_DSN='sqlite:var/demo.sqlite'` and `$env:EATEASY_DEMO='1'` before starting PHP. Sign in as `alex@example.test` or `admin@example.test` with `EatEasy-demo-2026`. These are local sample accounts; the script never changes a PostgreSQL database.
 
-Design and features are inspired by [TheFork](https://www.thefork.pt/).
-
-## License
-
-Academic project. Free to use for educational purposes.
+Screenshots use fictional sample restaurants. Demo photography: [restaurant interior](https://images.unsplash.com/photo-1517248135467-4c7edcad34c4), [dining room](https://images.unsplash.com/photo-1555396273-367ea4eb4db5), and [table service](https://images.unsplash.com/photo-1414235077428-338989a2e8c0), via Unsplash. The app uses PHP, PDO, vanilla JavaScript and CSS.
