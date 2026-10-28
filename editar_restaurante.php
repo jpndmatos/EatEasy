@@ -61,8 +61,7 @@ if (!$rest) { echo "Restaurante não encontrado."; exit; }
     <main class="main-content" style="display:flex; justify-content:center; align-items:start;">
         <div class="white-box" style="width: 100%; max-width: 600px; margin-top: 20px;">
             <div style="margin-bottom:30px;">
-                <small style="text-transform:uppercase; color:var(--text-muted); font-weight:bold;">A editar</small>
-                <h2 style="margin:0;"><?php echo htmlspecialchars($rest['nome']); ?></h2>
+                <h2 style="margin:0;">Editar: <?php echo htmlspecialchars($rest['nome']); ?></h2>
             </div>
             <?php if($msg) echo "<div class='$tipo_msg'>$msg</div>"; ?>
             <form method="POST">

@@ -74,7 +74,7 @@ table {width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}th 
  .app-layout {display:block}.sidebar {height:auto;position:static;padding:var(--space-20);border-right:0;border-bottom:1px solid var(--border)}
  .logo {font-size:24px;margin:0 0 var(--space-md)}.user-info {border:0;padding:0;margin:0 0 var(--space-sm)}.user-info p {font-size:13px}.user-info small {display:none}
  .menu-links {flex-direction:row;flex-wrap:wrap;gap:var(--space-2xs)}.menu-links a {padding:var(--space-xs) var(--space-sm);font-size:12px}.menu-links .btn-logout {margin:0}
- .theme-toggle {top:16px;right:16px;padding:var(--space-xs) var(--space-sm)}.main-content {padding:var(--space-28) var(--space-20) var(--space-xl)}h1 {font-size:28px}h2 {font-size:24px}
+ .theme-toggle {top:16px;right:16px;padding:var(--space-xs) var(--space-sm)}.main-content form>div[style*="display"] {flex-wrap:wrap}.main-content .form-group {min-width:160px!important;max-width:100%}.main-content {padding:var(--space-28) var(--space-20) var(--space-xl)}h1 {font-size:28px}h2 {font-size:24px}
  .restaurant-grid {gap:var(--space-md)}.card-info {padding:var(--space-md)}.card-img {height:160px}.card-title {font-size:16px}.card-meta {flex-wrap:wrap}
  .restaurant-banner {height:200px}.auth-card {padding:var(--space-28)}.white-box {padding:var(--space-md)}.search-box button {padding-inline:var(--space-md)}
 }
