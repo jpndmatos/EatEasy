@@ -14,10 +14,10 @@ $nome_user = $_SESSION['nome'];
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-    <script src="js/theme.js"></script>
+    <script src="js/theme.js?v=20261028-theme-icons"></script>
     <title>Gerir Reservas</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="css/style.css?v=20261028-theme-icons">
+    <script src="js/script.js?v=20261028-theme-icons" defer></script>
 </head>
 <body>
 <button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg></button>

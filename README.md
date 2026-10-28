@@ -3,16 +3,16 @@
 A restaurant booking app built with PHP and PostgreSQL. Search by cuisine or location, book a table, and manage upcoming reservations. Administrators can add and edit restaurants and review bookings.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/dark.jpg">
-  <img src="docs/desktop.jpg" alt="EatEasy restaurant directory with sample listings" width="1200">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/dark-icons.jpg">
+  <img src="docs/desktop-icons.jpg" alt="EatEasy restaurant directory with sample listings" width="1200">
 </picture>
 
 <details>
 <summary>Booking and mobile views</summary>
 <br>
-<img src="docs/booking.jpg" alt="Booking a table in EatEasy" width="1000">
-<img src="docs/admin.jpg" alt="Administrator reservation table" width="1000">
-<img src="docs/mobile.jpg" alt="EatEasy on mobile" width="320">
+<img src="docs/booking-icons.jpg" alt="Booking a table in EatEasy" width="1000">
+<img src="docs/admin-icons.jpg" alt="Administrator reservation table" width="1000">
+<img src="docs/mobile-icons.jpg" alt="EatEasy on mobile" width="320">
 </details>
 
 ## Features
