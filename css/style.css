@@ -1,15 +1,10 @@
-/* Hallmark | theme: brand | genre: modern-minimal | scope: app | redesign: full | modes: light+dark | signature: restaurant directory and booking form */
-/* Critique: preserve green identity and PHP routes; flatten chrome, improve reading and mobile forms. */
-/* Hallmark · dismissed 41 · card-img holds a photo and no text. */
-/* Hallmark · answered F7 · native form fields, restaurant cards and cuisine filters use a restrained shared border; navigation and booking form rely on whitespace. */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 :root {
- --font-body: 'Poppins', sans-serif; --primary-color:#007a5e; --primary-hover:#006049; --primary-light:#e6f2ec;
+ --font-body: 'Segoe UI', Arial, sans-serif; --primary-color:#007a5e; --primary-hover:#006049; --primary-light:#e6f2ec;
  --bg-color:#f7f8f5; --surface:#ffffff; --text-color:#202d28; --text-muted:#58665e; --border:#dce2dc;
  --input-bg:#ffffff; --danger-color:#aa322b; --success-bg:#e6f2ec; --warning-bg:#fff3db; --warning-ink:#795309; --on-primary:#ffffff;
  --radius:8px; --space-2xs:4px; --space-20:20px; --space-28:28px; --space-32:32px; --space-76:76px; --space-80:80px; --space-xs:8px; --space-sm:12px; --space-md:16px; --space-lg:24px; --space-xl:40px; color-scheme:light;
 }
-[data-mode="dark"] { --primary-color:#88ccb1; --primary-hover:#a8dfc6; --primary-light:#263d32; --bg-color:#171e1a; --surface:#202923; --text-color:#e7eee8; --text-muted:#b0beb3; --border:#3d4b41; --input-bg:#202923; --danger-color:#ffaaa0; --success-bg:#263d32; --warning-bg:#3d3320; --warning-ink:#f0cd87; --on-primary:#14291f; color-scheme:dark; }
+
 * {box-sizing:border-box}
 html,body {margin:0;overflow-x:clip}
 body {background:var(--bg-color);color:var(--text-color);font-family:var(--font-body);font-size:14px;line-height:1.65}

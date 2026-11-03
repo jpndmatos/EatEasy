@@ -30,14 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-    <script src="js/theme.js?v=20261028-theme-icons"></script>
     <title>Registar - eatEasy</title>
     <link rel="stylesheet" href="css/style.css?v=20261028-theme-icons">
     <script src="js/script.js?v=20261028-theme-icons" defer></script>
+    <link rel="stylesheet" href="css/dashboard.css?v=20261103-viewport">
 </head>
 <body>
-<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg></button>
-<div class="auth-container">
+<main class="auth-container">
     <div class="auth-card">
         <h2>Criar Nova Conta</h2>
 
@@ -61,6 +60,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             Já tem conta? <a href="index.php">Faça Login</a>.
         </p>
     </div>
-</div>
+</main>
 </body>
 </html>

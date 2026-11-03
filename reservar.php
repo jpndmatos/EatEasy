@@ -53,13 +53,12 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-    <script src="js/theme.js?v=20261028-theme-icons"></script>
     <title>Reservar</title>
     <link rel="stylesheet" href="css/style.css?v=20261028-theme-icons">
     <script src="js/script.js?v=20261028-theme-icons" defer></script>
+    <link rel="stylesheet" href="css/dashboard.css?v=20261103-viewport">
 </head>
-<body>
-<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg></button>
+<body class="dashboard-page">
 
 <div class="app-layout">
     <aside class="sidebar">
@@ -94,7 +93,7 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
         }
 
         $imgUrl = "https://loremflickr.com/1000/400/" . urlencode($keywords) . "?lock=" . $rest['id'];
-                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".jpg"; }
+                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".webp"; }
         ?>
         <img src="<?php echo $imgUrl; ?>" class="restaurant-banner" alt="Banner">
 
@@ -109,7 +108,7 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
         </div>
 
         <div class="reservation-section">
-            <h3>Fazer uma Reserva</h3>
+            <h2>Fazer uma Reserva</h2>
             <?php if($msg) echo "<div class='$tipo_msg'>$msg</div>"; ?>
             <form method="POST">
                 <input type="hidden" name="restaurante_id" value="<?php echo $rest_id; ?>">

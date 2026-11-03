@@ -16,13 +16,12 @@ $pagina = $_GET['p'] ?? 'home';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-    <script src="js/theme.js?v=20261028-theme-icons"></script>
     <title>eatEasy</title>
     <link rel="stylesheet" href="css/style.css?v=20261028-theme-icons">
     <script src="js/script.js?v=20261028-theme-icons" defer></script>
+    <link rel="stylesheet" href="css/dashboard.css?v=20261103-viewport">
 </head>
-<body>
-<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg></button>
+<body class="dashboard-page">
 
 <div class="app-layout">
 
@@ -46,6 +45,7 @@ $pagina = $_GET['p'] ?? 'home';
     </aside>
 
     <main class="main-content">
+        <?php if (getenv('EATEASY_DEMO')): ?><p class="demo-notice">Demonstração · restaurantes e reservas fictícios.</p><?php endif; ?>
 
         <!-- Area cliente -->
         <?php if ($tipo == 'cliente'): ?>
@@ -74,8 +74,8 @@ $pagina = $_GET['p'] ?? 'home';
                         </a>
                     <?php endwhile; ?>
                 </div>
-                <h2>Restaurantes</h2>
-                <div class="restaurant-grid">
+                <h1>Restaurantes</h1>
+                <div class="restaurant-grid" tabindex="0" role="region" aria-label="Lista de restaurantes">
                     <?php
                     $termo = isset($_GET['busca']) ? "%".$_GET['busca']."%" : "%";
                     $sql = "SELECT * FROM restaurantes WHERE ativo = TRUE AND (LOWER(nome) LIKE LOWER(:t) OR LOWER(cozinha) LIKE LOWER(:t) OR LOWER(localizacao) LIKE LOWER(:t))";
@@ -96,14 +96,14 @@ $pagina = $_GET['p'] ?? 'home';
                             ];
                             if (isset($mapa[$row['cozinha']])) { $keywords = $mapa[$row['cozinha']]; }
                             $imgUrl = "https://loremflickr.com/320/240/" . urlencode($keywords) . "?lock=" . $row['id'];
-                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".jpg"; }
+                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".webp"; }
                             echo '<div class="card">';
                             echo '  <div class="card-img"><img src="'.$imgUrl.'" alt="Foto"></div>';
                             echo '  <div class="card-info">';
                             echo '      <div style="margin-bottom:10px; width:100%;">';
                             echo '          <span class="card-pill">'.htmlspecialchars($row['cozinha']).'</span>';
                             echo '      </div>';
-                            echo '      <div class="card-title">'.htmlspecialchars($row['nome']).'</div>';
+                            echo '      <h2 class="card-title">'.htmlspecialchars($row['nome']).'</h2>';
                             echo '      <small style="color:var(--text-muted); margin-bottom:15px; display:block;">'.htmlspecialchars($row['localizacao']).'</small>';
                             echo '      <div class="card-meta">';
                             echo '          <span>Preço Médio</span>';
@@ -121,9 +121,9 @@ $pagina = $_GET['p'] ?? 'home';
 
             <?php elseif ($pagina == 'reservas'): ?>
                 <!-- Reservas cliente -->
-                <h2>As Minhas Reservas</h2>
+                <h1>As Minhas Reservas</h1>
                 <?php if(isset($_GET['msg']) && $_GET['msg']=='cancelado') echo "<div class='sucesso'>Reserva cancelada com sucesso.</div>"; ?>
-                <div class="white-box">
+                <div class="white-box" tabindex="0" role="region" aria-label="Lista de reservas">
                     <?php
                     $sqlRes = "SELECT r.id, r.data_hora, r.num_pessoas, rest.nome, rest.localizacao FROM reservas r 
                         JOIN restaurantes rest ON r.restaurante_id = rest.id 
@@ -163,7 +163,7 @@ $pagina = $_GET['p'] ?? 'home';
             <div class="restaurant-header" style="margin-top: 20px; margin-bottom: 30px;">
                 <h1>Painel de Controlo</h1>
             </div>
-            <div class="restaurant-grid">
+            <div class="restaurant-grid" tabindex="0" role="region" aria-label="Lista de restaurantes">
                 <?php
                 $sqlRest = "SELECT * FROM restaurantes WHERE ativo = TRUE ORDER BY id DESC";
                 $stmtRest = $pdo->query($sqlRest);
@@ -180,7 +180,7 @@ $pagina = $_GET['p'] ?? 'home';
                     ];
                     if (isset($mapa[$r['cozinha']])) { $keywords = $mapa[$r['cozinha']]; }
                     $imgUrl = "https://loremflickr.com/320/240/" . urlencode($keywords) . "?lock=" . $r['id'];
-                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".jpg"; }
+                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".webp"; }
                     ?>
                     <div class="card">
                         <div class="card-img" style="height: 140px;"><img src="<?php echo $imgUrl; ?>" alt="Foto"></div>
@@ -188,7 +188,7 @@ $pagina = $_GET['p'] ?? 'home';
                             <div style="margin-bottom:10px;">
                                 <span class="card-pill"><?php echo htmlspecialchars($r['cozinha']); ?></span>
                             </div>
-                            <div class="card-title"><?php echo htmlspecialchars($r['nome']); ?></div>
+                            <h2 class="card-title"><?php echo htmlspecialchars($r['nome']); ?></h2>
                             <div class="card-meta">
                                 <span>Preço Médio</span>
                                 <span class="price-badge"><?php echo htmlspecialchars($r['preco_medio']); ?> €</span>

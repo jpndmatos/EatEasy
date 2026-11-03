@@ -31,16 +31,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-    <script src="js/theme.js?v=20261028-theme-icons"></script>
     <title>Login - eatEasy</title>
     <link rel="stylesheet" href="css/style.css?v=20261028-theme-icons">
     <script src="js/script.js?v=20261028-theme-icons" defer></script>
+    <link rel="stylesheet" href="css/dashboard.css?v=20261103-viewport">
 </head>
 <body>
-<button type="button" class="theme-toggle" aria-label="Alterar tema" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg></button>
-<div class="auth-container">
+<main class="auth-container">
     <div class="auth-card">
-        <div class="auth-logo">eatEasy</div>
+        <h1 class="auth-logo">eatEasy</h1>
         <p class="auth-subtitle">Entre para consultar restaurantes e gerir reservas.</p>
 
         <?php if(isset($erro)) echo "<div class='aviso'>$erro</div>"; ?>
@@ -64,6 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="registar.php" style="color: var(--primary-color); font-weight: 700; text-decoration: none;">Criar conta gratuita</a>
         </div>
     </div>
-</div>
+</main>
 </body>
 </html>

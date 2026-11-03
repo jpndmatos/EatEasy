@@ -10,7 +10,7 @@ $user = $pdo->prepare('INSERT INTO utilizadores (nome,email,password,tipo) VALUE
 $user->execute(['Alex','alex@example.test',password_hash('EatEasy-demo-2026', PASSWORD_DEFAULT),'cliente']);
 $user->execute(['Admin','admin@example.test',password_hash('EatEasy-demo-2026', PASSWORD_DEFAULT),'admin']);
 $restaurant = $pdo->prepare('INSERT INTO restaurantes (nome,localizacao,preco_medio,cozinha) VALUES (?,?,?,?)');
-foreach ([['Mesa da Vila','Lisboa',22,'Portuguesa'],['Forno & Farinha','Porto',18,'Italiana'],['Verde à Mesa','Braga',16,'Vegetariana'],['Casa do Mar','Matosinhos',32,'Marisco'],['Pátio do Sul','Faro',24,'Mediterrânica'],['Trattoria do Bairro','Coimbra',20,'Italiana']] as $row) $restaurant->execute($row);
+foreach (json_decode(file_get_contents(dirname(__DIR__) . '/database/demo-restaurants.json'), true, 512, JSON_THROW_ON_ERROR) as $row) $restaurant->execute($row);
 $booking = $pdo->prepare('INSERT INTO reservas (utilizador_id,restaurante_id,data_hora,num_pessoas) VALUES (1,?,?,?)');
 $booking->execute([1,date('Y-m-d',strtotime('+2 days')).' 19:30:00',2]);
 $booking->execute([2,date('Y-m-d',strtotime('-5 days')).' 13:00:00',4]);

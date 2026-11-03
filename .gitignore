@@ -1,3 +1,5 @@
 var/
 .env
 .hallmark/
+
+dist/
