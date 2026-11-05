@@ -2,7 +2,7 @@
 
 A restaurant booking app with customer and admin accounts. Customers can search for a restaurant and book a table. Admins can manage restaurants and view reservations.
 
-[Complete source](https://github.com/jpndmatos/eatEasy)
+[Complete source](https://github.com/jpndmatos/EatEasy)
 
 ![EatEasy dashboard](docs/workspace.png)
 
