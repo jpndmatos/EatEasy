@@ -555,6 +555,11 @@ body.dashboard-page {
   color: var(--text-muted);
   border: 1px solid var(--border);
 }
+.editorial-note { margin: 0; color: var(--text-muted); font-size: 11px; }
+.inline-action { display: inline-flex; margin: 0; padding: 0; flex: 1; }
+.inline-action button { width: 100%; }
+.booking-summary { padding: 12px 16px; background: var(--primary-light); border-left: 3px solid var(--primary-color); font-size: 13px; }
+.booking-summary:empty { display: none; }
 .filter-bar .tag-pill.active {
   background: var(--primary-light);
   color: var(--primary-color);

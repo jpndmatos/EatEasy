@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sqlUpd = "UPDATE restaurantes SET nome = :n, localizacao = :l, preco_medio = :p, cozinha = :c WHERE id = :id";
         $pdo->prepare($sqlUpd)->execute(['n' => $novo_nome, 'l' => $novo_local, 'p' => $novo_preco, 'c' => $nova_cozinha, 'id' => $id]);
         $pdo->commit();
-        echo "<script>alert('Restaurante atualizado!'); window.location='dashboard.php';</script>"; exit;
+        header('Location: dashboard.php?msg=atualizado', true, 303); exit;
     } catch (Exception $e) { $pdo->rollBack(); $msg = "Erro ao atualizar."; $tipo_msg = "aviso"; }
 }
 
@@ -64,6 +64,7 @@ if (!$rest) { echo "Restaurante não encontrado."; exit; }
             </div>
             <?php if($msg) echo "<div class='$tipo_msg'>$msg</div>"; ?>
             <form method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="form-group"><label for="nome">Nome do Restaurante</label>
                         <input id="nome" type="text" name="nome" value="<?php echo htmlspecialchars($rest['nome']); ?>" required></div>
                 <div class="form-group"><label for="local">Localização</label>

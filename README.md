@@ -2,17 +2,19 @@
 
 A restaurant booking app with customer and admin accounts. Customers can search for a restaurant and book a table. Admins can manage restaurants and view reservations.
 
-[Open the browser demo](https://jpndmatos.github.io/Portfolio/demo/eateasy/)
+[Complete source](https://github.com/jpndmatos/eatEasy)
 
 ![EatEasy dashboard](docs/workspace.png)
 
-The browser demo uses fictional data stored on this device. It does not send bookings to restaurants. The original PHP application below retains its server sessions, database and customer/admin accounts.
+This repository contains the PHP application, including server sessions, persistence and customer/admin accounts. Run it against PostgreSQL or an isolated local SQLite database. The supplied sample restaurants are fictional; this is not a booking connection to operating restaurants.
 
 ## Features
 
 - Customer and administrator accounts with hashed passwords.
 - Restaurant search, cuisine filters, and reservation history.
 - Lunch and dinner slots with checks for conflicting bookings.
+- Booking summary, past-slot protection and retained form values after a conflict.
+- Session-bound CSRF protection on forms; cancellations and restaurant removal require POST.
 - Fixed-height dashboard with scrollable restaurant lists, booking forms and reservation tables.
 
 ## Run locally
@@ -38,8 +40,20 @@ Screenshots use fictional sample restaurants. Demo photography: [restaurant inte
 
 ## Browser demo build
 
+This optional legacy export is not the complete application and is not published by the portfolio.
+
 ```sh
 php -n scripts/build-demo.php
 ```
 
 This creates `dist/` from the public frontend assets and `database/demo-restaurants.json`. No database contents, credentials or PHP server files are exported. The same dashboard CSS is used by both versions.
+
+## Verification
+
+```sh
+python scripts/verify.py
+```
+
+Requires Python 3 and PHP with PDO SQLite. The check creates a temporary database, starts its own PHP server, exercises real sign-in, booking conflicts, cancellation and CSRF rejection, then shuts down and removes its own data. Existing application data is untouched. CI also checks PHP syntax.
+
+Restaurant photography is bundled editorial imagery, labelled as illustrative. Booking times use Europe/Lisbon.

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql = "INSERT INTO restaurantes (nome, localizacao, preco_medio, cozinha) VALUES (:n, :l, :p, :c)";
     try {
         $pdo->prepare($sql)->execute(['n' => $nome, 'l' => $local, 'p' => $preco, 'c' => $cozinha]);
-        echo "<script>alert('Restaurante criado com sucesso!'); window.location='dashboard.php';</script>";
+        header('Location: dashboard.php?msg=criado', true, 303); exit;
     } catch (Exception $e) { $msg = "Erro ao criar."; $tipo_msg = "aviso"; }
 }
 ?>
@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if($msg) echo "<div class='$tipo_msg'>$msg</div>"; ?>
 
             <form method="POST">
+                <?php echo csrf_field(); ?>
 
                 <div style="display: flex; gap: 30px; flex-wrap: wrap;">
                     <div class="form-group" style="flex: 2; min-width: 300px;">

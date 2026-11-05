@@ -74,31 +74,19 @@ $pagina = $_GET['p'] ?? 'home';
                         </a>
                     <?php endwhile; ?>
                 </div>
-                <h1>Restaurantes</h1>
+                <h1>Restaurantes</h1><p class="editorial-note">Imagens de ambiente ilustrativas.</p>
                 <div class="restaurant-grid" tabindex="0" role="region" aria-label="Lista de restaurantes">
                     <?php
                     $termo = isset($_GET['busca']) ? "%".$_GET['busca']."%" : "%";
-                    $sql = "SELECT * FROM restaurantes WHERE ativo = TRUE AND (LOWER(nome) LIKE LOWER(:t) OR LOWER(cozinha) LIKE LOWER(:t) OR LOWER(localizacao) LIKE LOWER(:t))";
+                    $sql = "SELECT * FROM restaurantes WHERE ativo = TRUE AND (LOWER(nome) LIKE LOWER(:t) OR LOWER(cozinha) LIKE LOWER(:t) OR LOWER(localizacao) LIKE LOWER(:t)) ORDER BY nome, id";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(['t' => $termo]);
                     $restaurants = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     if (count($restaurants) > 0) {
                         foreach ($restaurants as $row) {
-                            // Imagens
-                            $keywords = "restaurant,food";
-                            $mapa = [
-                                    'Portuguesa' => 'portuguese food,meat', 'Italiana' => 'pizza,pasta',
-                                    'Japonesa' => 'sushi,ramen', 'Americana' => 'burger,fries',
-                                    'Chinesa' => 'chinese food', 'Indiana' => 'curry,indian food',
-                                    'Mexicana' => 'tacos', 'Brasileira' => 'bbq meat',
-                                    'Vegetariana' => 'vegetables,salad', 'Mediterrânica' => 'mediterranean food',
-                                    'Fast Food' => 'burger', 'Marisco' => 'seafood'
-                            ];
-                            if (isset($mapa[$row['cozinha']])) { $keywords = $mapa[$row['cozinha']]; }
-                            $imgUrl = "https://loremflickr.com/320/240/" . urlencode($keywords) . "?lock=" . $row['id'];
-                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".webp"; }
+                            $imgUrl = restaurant_image((int)$row['id']);
                             echo '<div class="card">';
-                            echo '  <div class="card-img"><img src="'.$imgUrl.'" alt="Foto"></div>';
+                            echo '  <div class="card-img"><img src="'.$imgUrl.'" alt="" loading="lazy" decoding="async" width="640" height="400"></div>';
                             echo '  <div class="card-info">';
                             echo '      <div style="margin-bottom:10px; width:100%;">';
                             echo '          <span class="card-pill">'.htmlspecialchars($row['cozinha']).'</span>';
@@ -122,7 +110,9 @@ $pagina = $_GET['p'] ?? 'home';
             <?php elseif ($pagina == 'reservas'): ?>
                 <!-- Reservas cliente -->
                 <h1>As Minhas Reservas</h1>
-                <?php if(isset($_GET['msg']) && $_GET['msg']=='cancelado') echo "<div class='sucesso'>Reserva cancelada com sucesso.</div>"; ?>
+                <?php if(isset($_GET['msg']) && $_GET['msg']=='indisponivel') echo "<div class='aviso' role='alert'>Esta reserva já não pode ser cancelada.</div>";
+                if(isset($_GET['msg']) && $_GET['msg']=='criado') echo "<div class='sucesso' role='status'>Reserva confirmada.</div>";
+                if(isset($_GET['msg']) && $_GET['msg']=='cancelado') echo "<div class='sucesso' role='status'>Reserva cancelada com sucesso.</div>"; ?>
                 <div class="white-box" tabindex="0" role="region" aria-label="Lista de reservas">
                     <?php
                     $sqlRes = "SELECT r.id, r.data_hora, r.num_pessoas, rest.nome, rest.localizacao FROM reservas r 
@@ -145,7 +135,7 @@ $pagina = $_GET['p'] ?? 'home';
                                     <td><?php if($passou): ?><span class="badge-past">Concluída</span><?php else: ?><span class="badge-future">Confirmada</span><?php endif; ?></td>
                                     <td>
                                         <?php if(!$passou): ?>
-                                            <a href="cancelar_reserva.php?id=<?php echo $res['id']; ?>" style="color:var(--danger-color); font-weight:700; font-size:0.9rem; text-decoration:none;">Cancelar</a>
+                                            <form class="inline-action" method="POST" action="cancelar_reserva.php"><?php echo csrf_field(); ?><input type="hidden" name="id" value="<?php echo (int)$res['id']; ?>"><button class="cancel-booking" type="submit">Cancelar</button></form>
                                         <?php else: ?> <span style="color:var(--text-muted);">-</span> <?php endif; ?>
                                     </td>
                                 </tr>
@@ -160,6 +150,10 @@ $pagina = $_GET['p'] ?? 'home';
 
             <!-- Area admin -->
         <?php elseif ($tipo == 'admin'): ?>
+            <?php
+            $messages = ['criado' => 'Restaurante criado.', 'atualizado' => 'Restaurante atualizado.', 'removido' => 'Restaurante removido da lista.'];
+            if (isset($messages[$_GET['msg'] ?? ''])) echo '<p class="sucesso" role="status">' . $messages[$_GET['msg']] . '</p>';
+            ?>
             <div class="restaurant-header" style="margin-top: 20px; margin-bottom: 30px;">
                 <h1>Painel de Controlo</h1>
             </div>
@@ -168,22 +162,10 @@ $pagina = $_GET['p'] ?? 'home';
                 $sqlRest = "SELECT * FROM restaurantes WHERE ativo = TRUE ORDER BY id DESC";
                 $stmtRest = $pdo->query($sqlRest);
                 while ($r = $stmtRest->fetch(PDO::FETCH_ASSOC)):
-                    // Imagens admin
-                    $keywords = "restaurant,food";
-                    $mapa = [
-                            'Portuguesa' => 'portuguese food,meat', 'Italiana' => 'pizza,pasta',
-                            'Japonesa' => 'sushi,ramen', 'Americana' => 'burger,fries',
-                            'Chinesa' => 'chinese food', 'Indiana' => 'curry,indian food',
-                            'Mexicana' => 'tacos', 'Brasileira' => 'bbq meat',
-                            'Vegetariana' => 'vegetables,salad', 'Mediterrânica' => 'mediterranean food',
-                            'Fast Food' => 'burger', 'Marisco' => 'seafood'
-                    ];
-                    if (isset($mapa[$r['cozinha']])) { $keywords = $mapa[$r['cozinha']]; }
-                    $imgUrl = "https://loremflickr.com/320/240/" . urlencode($keywords) . "?lock=" . $r['id'];
-                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".webp"; }
+                    $imgUrl = restaurant_image((int)$r['id']);
                     ?>
                     <div class="card">
-                        <div class="card-img" style="height: 140px;"><img src="<?php echo $imgUrl; ?>" alt="Foto"></div>
+                        <div class="card-img" style="height: 140px;"><img src="<?php echo $imgUrl; ?>" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
                         <div class="card-info">
                             <div style="margin-bottom:10px;">
                                 <span class="card-pill"><?php echo htmlspecialchars($r['cozinha']); ?></span>
@@ -195,7 +177,7 @@ $pagina = $_GET['p'] ?? 'home';
                             </div>
                             <div style="display:flex; gap: 10px; margin-top: 15px; width: 100%;">
                                 <a href="editar_restaurante.php?id=<?php echo $r['id']; ?>" class="btn-card" style="flex:1;">Editar</a>
-                                <a href="remover_restaurante.php?id=<?php echo $r['id']; ?>" class="btn-card btn-remover" style="flex:1;">Remover</a>
+                                <form class="inline-action" method="POST" action="remover_restaurante.php"><?php echo csrf_field(); ?><input type="hidden" name="id" value="<?php echo (int)$r['id']; ?>"><button type="submit" class="btn-card btn-remover">Remover</button></form>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,26 @@
 // js/script.js
 document.addEventListener("DOMContentLoaded", function() {
+    const day = document.getElementById('dia');
+    const hour = document.getElementById('hora');
+    const people = document.getElementById('pessoas');
+    const summary = document.querySelector('.booking-summary');
+    if (day && hour && people && summary) {
+        const update = () => {
+            const today = new Date();
+            const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/Lisbon', year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(today).map(part=>[part.type,part.value]));
+            const localDate = `${parts.year}-${parts.month}-${parts.day}`;
+            const now = `${parts.hour}:${parts.minute}`;
+            for (const option of hour.options) {
+                if (option.value) option.disabled = day.value === localDate && option.value <= now;
+            }
+            if (hour.selectedOptions[0]?.disabled && hour.value) hour.value = '';
+            summary.textContent = day.value && hour.value
+                ? `${new Intl.DateTimeFormat('pt-PT', {day:'numeric',month:'long'}).format(new Date(day.value + 'T12:00'))} · ${hour.value} · ${people.value} ${people.value === '1' ? 'pessoa' : 'pessoas'}`
+                : '';
+        };
+        [day, hour, people].forEach(field => field.addEventListener('change', update));
+        update();
+    }
 
     const botoesRemover = document.querySelectorAll('.btn-remover');
     botoesRemover.forEach(btn => {

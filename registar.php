@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if($mensagem) echo "<div class='$tipo_msg'>$mensagem</div>"; ?>
 
         <form method="POST">
+                <?php echo csrf_field(); ?>
             <label for="nome">Nome Completo:</label>
                         <input id="nome" type="text" name="nome" placeholder="O teu nome" required>
 

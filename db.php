@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/security.php';
+date_default_timezone_set('Europe/Lisbon');
 // PostgreSQL remains the default. SQLite is an explicit local demo option.
 $dsn = getenv('EATEASY_DSN') ?: 'pgsql:host=localhost;port=5432;dbname=eateasy_db';
 try {

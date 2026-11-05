@@ -6,7 +6,11 @@ require 'db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['tipo'] != 'cliente') { header("Location: index.php"); exit; }
 
 $nome = $_SESSION['nome'];
-$rest_id = $_GET['id'] ?? null;
+$rest_id = $_POST['restaurante_id'] ?? $_GET['id'] ?? null;
+$stmtRestaurant = $pdo->prepare('SELECT * FROM restaurantes WHERE ativo = TRUE AND id = ?');
+$stmtRestaurant->execute([(int)$rest_id]);
+$rest = $stmtRestaurant->fetch();
+if (!$rest) { header('Location: dashboard.php'); exit; }
 $msg = ""; $tipo_msg = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -35,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($conflito) { $msg = "Já tem reserva para esta refeição."; $tipo_msg = "aviso"; }
         else {
             $pdo->prepare("INSERT INTO reservas (utilizador_id, restaurante_id, data_hora, num_pessoas) VALUES (?,?,?,?)")->execute([$_SESSION['user_id'], $rest_id, $data_final, $pessoas]);
-            header("Location: dashboard.php?p=reservas"); exit;
+            header("Location: dashboard.php?p=reservas&msg=criado", true, 303); exit;
         }
     }
 }
@@ -73,29 +77,9 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
 
     <main class="main-content">
         <?php
-        $keywords = "restaurant,interior";
-        $mapa = [
-                'Portuguesa'    => 'portuguese food table',
-                'Italiana'      => 'italian restaurant interior',
-                'Japonesa'      => 'sushi bar',
-                'Americana'     => 'burger bar',
-                'Chinesa'       => 'chinese restaurant',
-                'Indiana'       => 'indian food table',
-                'Mexicana'      => 'mexican food table',
-                'Brasileira'    => 'brazilian bbq',
-                'Vegetariana'   => 'fresh salad vegetables',
-                'Mediterrânica' => 'mediterranean meal',
-                'Fast Food'     => 'burger joint',
-                'Marisco'       => 'seafood platter'
-        ];
-        if (isset($mapa[$rest['cozinha']])) {
-            $keywords = $mapa[$rest['cozinha']];
-        }
-
-        $imgUrl = "https://loremflickr.com/1000/400/" . urlencode($keywords) . "?lock=" . $rest['id'];
-                            if (getenv("EATEASY_DEMO")) { $imgUrl = "assets/restaurant-" . (((int)($row["id"] ?? $r["id"] ?? $rest["id"] ?? 1) - 1) % 3 + 1) . ".webp"; }
+        $imgUrl = restaurant_image((int)$rest['id']);
         ?>
-        <img src="<?php echo $imgUrl; ?>" class="restaurant-banner" alt="Banner">
+        <img src="<?php echo $imgUrl; ?>" class="restaurant-banner" alt="" width="1000" height="400">
 
         <div class="restaurant-header">
             <h1><?php echo htmlspecialchars($rest['nome']); ?></h1>
@@ -104,6 +88,7 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
                 <span class="tag-item"><?php echo htmlspecialchars($rest['localizacao']); ?></span>
                 <span class="tag-item">Preço Médio: <?php echo htmlspecialchars($rest['preco_medio']); ?> €</span>
             </div>
+            <div class="editorial-note">Imagem de ambiente ilustrativa.</div>
             <div class="info-hours"><strong>Horários:</strong> Almoço: 12:00-15:00 | Jantar: 19:00-23:00</div>
         </div>
 
@@ -111,49 +96,37 @@ for ($h=19; $h<=22; $h++) { $slots[] = sprintf("%02d:00", $h); $slots[] = sprint
             <h2>Fazer uma Reserva</h2>
             <?php if($msg) echo "<div class='$tipo_msg'>$msg</div>"; ?>
             <form method="POST">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="restaurante_id" value="<?php echo $rest_id; ?>">
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
                         <label for="dia">Dia</label>
-                        <input id="dia" type="date" name="dia" required min="<?php echo date('Y-m-d'); ?>">
+                        <input id="dia" type="date" name="dia" value="<?php echo htmlspecialchars($_POST['dia'] ?? '', ENT_QUOTES); ?>" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
                         <label for="hora">Hora</label>
                         <select id="hora" name="hora" required>
-                            <option value="" disabled selected>Selecionar Hora</option>
-                            <optgroup label="Almoço"><?php foreach($slots as $s) if($s<"18:00") echo "<option value='$s'>$s</option>"; ?></optgroup>
-                            <optgroup label="Jantar"><?php foreach($slots as $s) if($s>"18:00") echo "<option value='$s'>$s</option>"; ?></optgroup>
+                            <option value="" disabled <?php echo empty($_POST['hora']) ? 'selected' : ''; ?>>Selecionar Hora</option>
+                            <?php foreach (['Almoço' => array_filter($slots, fn($s) => $s < '18:00'), 'Jantar' => array_filter($slots, fn($s) => $s > '18:00')] as $label => $group): ?>
+                            <optgroup label="<?php echo $label; ?>"><?php foreach ($group as $s): ?>
+                                <option value="<?php echo $s; ?>" <?php echo ($_POST['hora'] ?? '') === $s ? 'selected' : ''; ?>><?php echo $s; ?></option>
+                            <?php endforeach; ?></optgroup>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
-                        <label for="select_pessoas">Pessoas</label>
-                        <select id="select_pessoas" onchange="togglePessoas(this)">
-                            <option value="1">1 Pessoa</option>
-                            <option value="2" selected>2 Pessoas</option>
-                            <option value="3">3 Pessoas</option>
-                            <option value="4">4 Pessoas</option>
-                            <option value="5">5 Pessoas</option>
-                            <option value="6">6 Pessoas</option>
-                            <option value="custom" style="font-weight:bold; color:var(--primary-color);">Outro (até 20)...</option>
+                        <label for="pessoas">Pessoas</label>
+                        <select id="pessoas" name="pessoas" required>
+                            <?php for ($n = 1; $n <= 20; $n++): ?>
+                            <option value="<?php echo $n; ?>" <?php echo (int)($_POST['pessoas'] ?? 2) === $n ? 'selected' : ''; ?>><?php echo $n . ($n === 1 ? ' Pessoa' : ' Pessoas'); ?></option>
+                            <?php endfor; ?>
                         </select>
-                        <input
-                                type="number"
-                                name="pessoas"
-                                id="input_pessoas"
-                                aria-label="Número de pessoas"
-                                min="1"
-                                max="20"
-                                value="2"
-                                style="display:none;"
-                                placeholder="Insira o nº de pessoas"
-                                oninvalid="this.setCustomValidity('Por favor, selecione um valor entre 1 e 20.')"
-                                oninput="this.setCustomValidity('')"
-                        >
                     </div>
                 </div>
+                <p class="booking-summary" role="status" aria-live="polite"></p>
                 <div style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
                     <button type="submit" style="min-width: 200px;">Confirmar Reserva</button>
                     <a href="dashboard.php" class="btn-secondary">Cancelar</a>

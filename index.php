@@ -45,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if(isset($erro)) echo "<div class='aviso'>$erro</div>"; ?>
 
         <form method="POST">
+                <?php echo csrf_field(); ?>
             <div class="form-group" style="text-align: left;">
                 <label for="email">Email</label>
                         <input id="email" type="email" name="email" placeholder="exemplo@email.com" required>
